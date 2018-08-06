@@ -1,11 +1,13 @@
 package tt.reddit.application.com.myapplicationreddt;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("MainActivity", "onresponse: server " + response.toString());
 
                 List<Entry> entries = response.body().getEntries();
-                ArrayList<Post> postList = new ArrayList<Post>();
+                final ArrayList<Post> postList = new ArrayList<Post>();
 
                 Log.d("MainActivity", "author1 " + entries.get(0).getAuthor());
                 Log.d("MainActivity", "updated1 " + entries.get(0).getUpdated());
@@ -150,6 +152,19 @@ public class MainActivity extends AppCompatActivity {
                 ListView listView = (ListView) findViewById(R.id.listview);
                 CustomListAdapter customAdapter = new CustomListAdapter(MainActivity.this,R.layout.card_layout,postList);
                 listView.setAdapter(customAdapter);
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(MainActivity.this,CommentsActivity.class);
+                        intent.putExtra("post_url",postList.get(position).getDate_updated());
+                        intent.putExtra("post_thumbnail",postList.get(position).getThumbnailURL());
+                        intent.putExtra("post_title",postList.get(position).getTitle());
+                        intent.putExtra("post_author",postList.get(position).getAuthor());
+                        intent.putExtra("post_updated",postList.get(position).getDate_updated());
+                        startActivity(intent);
+                    }
+                });
 
             }
 
