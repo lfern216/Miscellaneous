@@ -70,17 +70,14 @@ public class CommentsActivity extends AppCompatActivity{
             @Override
             public void onResponse(Call<Feed> call, Response<Feed> response) {
 
-                Log.d("MainActivity", "onresponse: server " + response.toString());
+                //Log.d("MainActivity", "onresponse: server " + response.toString());
 
                 List<Entry> entries = response.body().getEntries();
 
                 for(int i=1;i<entries.size();i++){
-                    System.out.println("rezz2_author " + entries.get(i).getAuthor());
-                    System.out.println("rezz2_id " + entries.get(i).getId());
-                    System.out.println("rezz2_updated " + entries.get(i).getUpdated());
 
                     String identifier = entries.get(i).getContent();
-                    System.out.println("rezz2_content " + identifier);
+                    //System.out.println("rezz2_content " + identifier);
 
                     int g = identifier.indexOf("<div class=\"md\"><p>");
                     int g2 = ++g;
@@ -89,21 +86,27 @@ public class CommentsActivity extends AppCompatActivity{
                     String[] splitter2 = entries.get(i).getContent().split("<div class=\"md\"><p>");
 
                     if(splitter2.length > 1) {
-                        System.out.println("rezz2_split0 " + splitter2[0]);
-                        System.out.println("rezz2_split1 " + splitter2[1]);
 
+                        int finalSplitter = splitter2[1].indexOf("</p> </div><!-- SC_ON -->");
+                        String current = "";
 
-                        String current = splitter2[1];
+                        if(finalSplitter == -1){
+                            current = splitter2[1];
+                        }else {
+                            current = splitter2[1].substring(0,finalSplitter);
+                        }
 
                         try{
 
-                            commentList.add(new Comment(entries.get(i).getAuthor().getName().toString(),splitter2[1],entries.get(i).getId().toString(),entries.get(i).getUpdated().toString()));
+                            commentList.add(new Comment(entries.get(i).getAuthor().getName().toString(),
+                                    current,entries.get(i).getId().toString(),entries.get(i).getUpdated().toString()));
 
                         }catch(IndexOutOfBoundsException e){
                             commentList.add(new Comment("error reading","none","none","none"));
                             Log.e("CommentsActivity","onResponse: IndexOutOfBoundsException"+e.getMessage());
                         }catch (NullPointerException e){
-                            commentList.add(new Comment(entries.get(i).getAuthor().getName().toString(),"none",entries.get(i).getId().toString(),entries.get(i).getUpdated().toString()));
+                            commentList.add(new Comment(entries.get(i).getAuthor().getName().toString(),
+                                    "none",entries.get(i).getId().toString(),entries.get(i).getUpdated().toString()));
 
                             Log.e("CommentsActivity","onResponse: NullPointerException"+e.getMessage());
                         }
@@ -113,10 +116,9 @@ public class CommentsActivity extends AppCompatActivity{
                         comment_ProgressBar.setVisibility(View.GONE);
                         comment_editText.setText("");
 
+                    }else{
+                        commentList.add(new Comment("error reading","none","none","none"));
                     }
-
-
-
                 }
             }
 
@@ -148,8 +150,6 @@ public class CommentsActivity extends AppCompatActivity{
         DateUpdated.setText(postDateUpdated);
 
         displayImage(postThumbnail,thumbnail,progressBar);
-
-
 
         try{
             String[] splitter = postURL.split("https://www.reddit.com/r/");

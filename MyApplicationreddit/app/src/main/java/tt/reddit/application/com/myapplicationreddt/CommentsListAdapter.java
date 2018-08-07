@@ -52,24 +52,18 @@ public class CommentsListAdapter extends ArrayAdapter<Comment>{
         super(context, resource, objects);
         mContext = context;
         mResource = resource;
-
-        //sets up the image loader library
-
     }
 
     @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-
-        //get the persons information
         String comment = getItem(position).getComment();
         String author = getItem(position).getAuthor();
         String date_updated = getItem(position).getUpdated();
 
         try{
 
-            //create the view result for showing the animation
             final View result;
 
             //ViewHolder object
@@ -94,11 +88,6 @@ public class CommentsListAdapter extends ArrayAdapter<Comment>{
                 holder.mProgressBar.setVisibility(View.VISIBLE);
             }
 
-
-//            Animation animation = AnimationUtils.loadAnimation(mContext,
-//                    (position > lastPosition) ? R.anim.load_down_anim : R.anim.load_up_anim);
-//            result.startAnimation(animation);
-
             lastPosition = position;
 
             holder.comment.setText(comment);
@@ -112,5 +101,4 @@ public class CommentsListAdapter extends ArrayAdapter<Comment>{
             return convertView;
         }
     }
-
 }
