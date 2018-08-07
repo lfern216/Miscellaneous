@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         Intent intent = new Intent(MainActivity.this,CommentsActivity.class);
-                        intent.putExtra("post_url",postList.get(position).getDate_updated());
+                        intent.putExtra("post_url",postList.get(position).getPostURL());
                         intent.putExtra("post_thumbnail",postList.get(position).getThumbnailURL());
                         intent.putExtra("post_title",postList.get(position).getTitle());
                         intent.putExtra("post_author",postList.get(position).getAuthor());

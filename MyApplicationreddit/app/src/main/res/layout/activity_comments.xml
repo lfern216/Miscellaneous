@@ -95,6 +95,7 @@
             />
 
         <TextView
+            android:id="@+id/text_comment"
             android:layout_alignBottom="@id/progressBar_comments"
             android:layout_alignTop="@id/progressBar_comments"
             android:layout_alignRight="@id/progressBar_comments"
@@ -110,7 +111,6 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/heading_layout"
             android:id="@+id/listView_comments"
-
             >
 
 
