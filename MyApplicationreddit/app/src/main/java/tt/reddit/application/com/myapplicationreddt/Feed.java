@@ -11,7 +11,6 @@ import java.util.*;
  * Created by lazaro on 7/26/18.
  */
 
-
 @Root(name = "Feed", strict = false)
 public class Feed implements Serializable {
 

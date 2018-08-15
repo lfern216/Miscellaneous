@@ -1,12 +1,17 @@
 package tt.reddit.application.com.myapplicationreddt;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -60,6 +65,7 @@ public class CommentsActivity extends AppCompatActivity{
         init_Post();
         list_comments = (ListView)findViewById(R.id.listView_comments);
 
+        setupToolbar();
 
         Retrofit retrofit = new Retrofit.Builder().baseUrl("https://www.reddit.com/r/").addConverterFactory(SimpleXmlConverterFactory.create()).build();
 
@@ -105,7 +111,7 @@ public class CommentsActivity extends AppCompatActivity{
                             commentList.add(new Comment("error reading","none","none","none"));
                             Log.e("CommentsActivity","onResponse: IndexOutOfBoundsException"+e.getMessage());
                         }catch (NullPointerException e){
-                            commentList.add(new Comment(entries.get(i).getAuthor().getName().toString(),
+                            commentList.add(new Comment("error reading",
                                     "none",entries.get(i).getId().toString(),entries.get(i).getUpdated().toString()));
 
                             Log.e("CommentsActivity","onResponse: NullPointerException"+e.getMessage());
@@ -113,6 +119,16 @@ public class CommentsActivity extends AppCompatActivity{
 
                         CommentsListAdapter adapter = new CommentsListAdapter(CommentsActivity.this,R.layout.comments_layout,commentList);
                         list_comments.setAdapter(adapter);
+
+
+                        list_comments.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                getUserComment();
+                            }
+                        });
+
+
                         comment_ProgressBar.setVisibility(View.GONE);
                         comment_editText.setText("");
 
@@ -159,6 +175,63 @@ public class CommentsActivity extends AppCompatActivity{
             Log.e("CommentsActivity","ArrayIndexOutOfBoundsException: " + e.getMessage());
         }
 
+
+        reply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+               getUserComment();
+            }
+        });
+
+
+        //opening url in web view
+        thumbnail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(CommentsActivity.this,WebActivity.class);
+                intent.putExtra("url",postURL);
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    private void setupToolbar(){
+        Toolbar mainToolBar = (Toolbar)findViewById(R.id.toolbar_main);
+
+        setSupportActionBar(mainToolBar);
+        mainToolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+
+                switch (item.getItemId()){
+                    case R.id.nav_login:
+                        Intent intent = new Intent(CommentsActivity.this,LoginActivity.class);
+                        startActivity(intent);
+                }
+
+
+                return false;
+            }
+        });
+    }
+
+    private void getUserComment(){
+
+        final Dialog dialog = new Dialog(CommentsActivity.this);
+        dialog.setTitle("Dialog Box");
+        dialog.setContentView(R.layout.comments_dialogbox);
+
+        //it occupies only 75% of the width and height of the screen
+        int width = (int)(getResources().getDisplayMetrics().widthPixels*0.95);
+        int height = (int)(getResources().getDisplayMetrics().heightPixels*0.75);
+
+        dialog.getWindow().setLayout(width,height);
+        dialog.show();
+
     }
 
     public void displayImage(String imageURL, ImageView imageView, final ProgressBar progressbar){
@@ -191,7 +264,6 @@ public class CommentsActivity extends AppCompatActivity{
             public void onLoadingCancelled(String imageUri, View view) {
                 progressbar.setVisibility(View.GONE);
             }
-
         });
 
     }
@@ -213,5 +285,11 @@ public class CommentsActivity extends AppCompatActivity{
         // END - UNIVERSAL IMAGE LOADER SETUP
 
         defaultImage = CommentsActivity.this.getResources().getIdentifier("@drawable/no_image",null,CommentsActivity.this.getPackageName());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.navigation_menu,menu);
+        return true;
     }
 }

@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 public class CustomListAdapter  extends ArrayAdapter<Post> {
 
     private static final String TAG = "CustomListAdapter";
@@ -101,10 +100,6 @@ public class CustomListAdapter  extends ArrayAdapter<Post> {
                 result = convertView;
             }
 
-
-//            Animation animation = AnimationUtils.loadAnimation(mContext,
-//                    (position > lastPosition) ? R.anim.load_down_anim : R.anim.load_up_anim);
-//            result.startAnimation(animation);
 
             lastPosition = position;
 

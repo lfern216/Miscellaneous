@@ -2,8 +2,11 @@ package tt.reddit.application.com.myapplicationreddt;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -11,10 +14,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-
+//import android.widget.Toolbar;
 import java.util.ArrayList;
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         btnRefresh = (Button) findViewById(R.id.btnRefresh);
         editFeedName = (EditText) findViewById(R.id.editTextFeed);
 
+        setupToolbar();
+
         initialization();
 
         btnRefresh.setOnClickListener(new View.OnClickListener() {
@@ -50,6 +54,27 @@ public class MainActivity extends AppCompatActivity {
 
                     initialization();
                 }
+            }
+        });
+    }
+
+    private void setupToolbar(){
+        Toolbar mainToolBar = (Toolbar)findViewById(R.id.toolbar_main);
+
+        setSupportActionBar(mainToolBar);
+        mainToolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+
+                switch (item.getItemId()){
+                    case R.id.nav_login:
+                        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                        startActivity(intent);
+                }
+
+
+                return false;
             }
         });
     }
@@ -173,6 +198,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("MainActivity", "onfailure: Unable to retrieve RSS: " + t.getMessage());
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.navigation_menu,menu);
+        return true;
     }
 
 
